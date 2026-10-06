@@ -3,7 +3,6 @@ package lab07_danielsavulescu.lab07_danielsavulescu;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
-import javafx.animation.ParallelTransition;
 import javafx.animation.PathTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
@@ -26,6 +25,11 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 /**
+ * 
+ * GitHub repository: https://github.com/SavulescuD/Lab07_DanielSavulescu.git
+ * 
+ * @author - Daniel Savulescu 2540408
+ * 
  * JavaFX App
  */
 public class App extends Application {
@@ -51,42 +55,40 @@ public class App extends Application {
         circle.setFill(Color.DARKRED);
         
         PathTransition pathT = new PathTransition(Duration.millis(TOTAL_DURATION), rectangle, circle);
-        pathT.setCycleCount(Animation.INDEFINITE);
+        pathT.setRate(-1);
         pathT.setInterpolator(Interpolator.LINEAR);
         pathT.setCycleCount(1);
         
         Ellipse ellipse = new Ellipse(SCENE_WIDTH / 2, SCENE_HEIGHT / 2, 150, 100);
-        ellipse.setFill(null);
+        ellipse.setFill(Color.GREEN);
         ellipse.setStroke(Color.BLACK);
         pane.getChildren().addAll(rectangle, circle, ellipse);
         
-        FadeTransition fTrans = new FadeTransition(new Duration(2500));
+        FadeTransition fTrans = new FadeTransition(topBottom);
         fTrans.setNode(ellipse);
         fTrans.setFromValue(1.0);
         fTrans.setToValue(0.25);
         
-        ScaleTransition sTrans = new ScaleTransition(new Duration(2500));
+        ScaleTransition sTrans = new ScaleTransition(leftRight);
         sTrans.setNode(ellipse);
         sTrans.setFromX(1.0);
         sTrans.setFromY(1.0);
-        sTrans.setToX(2.0);
-        sTrans.setToY(2.0);
+        sTrans.setToX(1.2);
+        sTrans.setToY(1.2);
         
-        RotateTransition rTrans = new RotateTransition(new Duration(2500));
+        RotateTransition rTrans = new RotateTransition(topBottom);
         rTrans.setNode(ellipse);
         rTrans.setFromAngle(0.0);
         rTrans.setToAngle(360.0);
         
-        TranslateTransition tTrans = new TranslateTransition(new Duration(2500));
+        TranslateTransition tTrans = new TranslateTransition(leftRight);
         tTrans.setNode(ellipse);
-        tTrans.setCycleCount(Animation.INDEFINITE);
         tTrans.setAutoReverse(true);
-        tTrans.setToX(SCENE_WIDTH / 2);
-        tTrans.setToY(SCENE_HEIGHT / 2 - 50);
+        tTrans.setByY(-100);
         
-        SequentialTransition sqTrans = new SequentialTransition(fTrans, sTrans, sTrans, tTrans);
+        TranslateTransition hold = new TranslateTransition(Duration.seconds(3), ellipse);
         
-        ParallelTransition allAnimations = new ParallelTransition(sqTrans, pathT);
+        SequentialTransition sqTrans = new SequentialTransition(fTrans, sTrans, rTrans, tTrans, hold);
         
         Button startBtn = new Button("Start");
         Button resetBtn = new Button("Reset");
@@ -101,23 +103,30 @@ public class App extends Application {
         root.setBottom(buttons);
         
         startBtn.setOnAction(event -> {
-            if (allAnimations.getStatus() != Animation.Status.RUNNING) {
+            if (sqTrans.getStatus() != Animation.Status.RUNNING) {
                 resetShapes(circle, ellipse);
-                allAnimations.playFromStart();
+                sqTrans.playFromStart();
+                pathT.setRate(-1);
+                pathT.play();
                 startBtn.setDisable(true);
             }
         });
         
         resetBtn.setOnAction(event -> {
-            allAnimations.stop();
+            pathT.stop();
+            sqTrans.stop();
             resetShapes(circle, ellipse);
             startBtn.setDisable(false);
         });
         
         exitBtn.setOnAction(event -> {
-            allAnimations.stop();
+            pathT.stop();
+            sqTrans.stop();
             Platform.exit();
         });
+        
+        
+        sqTrans.setOnFinished(event -> Platform.exit());
         
         var scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT + 60);
         stage.setScene(scene);
