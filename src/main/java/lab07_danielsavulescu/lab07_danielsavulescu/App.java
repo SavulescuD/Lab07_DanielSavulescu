@@ -10,8 +10,13 @@ import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -36,7 +41,7 @@ public class App extends Application {
         Duration topBottom = Duration.millis(TOTAL_DURATION * (RECTANGLE_WIDTH / perimeter));
         Duration leftRight = Duration.millis(TOTAL_DURATION * (RECTANGLE_HEIGHT / perimeter));
         
-        Pane root = new Pane();
+        Pane pane = new Pane();
         
         Rectangle rectangle = new Rectangle(SPACING, SPACING, RECTANGLE_WIDTH, RECTANGLE_HEIGHT);
         rectangle.setFill(null);
@@ -53,6 +58,7 @@ public class App extends Application {
         Ellipse ellipse = new Ellipse(SCENE_WIDTH / 2, SCENE_HEIGHT / 2, 150, 100);
         ellipse.setFill(null);
         ellipse.setStroke(Color.BLACK);
+        pane.getChildren().addAll(rectangle, circle, ellipse);
         
         FadeTransition fTrans = new FadeTransition(new Duration(2500));
         fTrans.setNode(ellipse);
@@ -86,15 +92,56 @@ public class App extends Application {
         Button resetBtn = new Button("Reset");
         Button exitBtn = new Button("Exit");
         
+        HBox buttons = new HBox(15, startBtn, resetBtn, exitBtn);
+        buttons.setAlignment(Pos.CENTER);
+        buttons.setPadding(new Insets(20));
         
-        root.getChildren().addAll(rectangle, circle, ellipse);
-        var scene = new Scene(root, 640, 480);
+        BorderPane root = new BorderPane();
+        root.setCenter(pane);
+        root.setBottom(buttons);
+        
+        startBtn.setOnAction(event -> {
+            if (allAnimations.getStatus() != Animation.Status.RUNNING) {
+                resetShapes(circle, ellipse);
+                allAnimations.playFromStart();
+                startBtn.setDisable(true);
+            }
+        });
+        
+        resetBtn.setOnAction(event -> {
+            allAnimations.stop();
+            resetShapes(circle, ellipse);
+            startBtn.setDisable(false);
+        });
+        
+        exitBtn.setOnAction(event -> {
+            allAnimations.stop();
+            Platform.exit();
+        });
+        
+        var scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT + 60);
         stage.setScene(scene);
         stage.show();
     }
 
     public static void main(String[] args) {
         launch();
+    }
+    
+    /**
+     * resets the status of the circle and ellipse
+     * @param circle the circle
+     * @param ellipse the ellipse
+     */
+    public static void resetShapes(Circle circle, Ellipse ellipse) {
+        circle.setTranslateX(0);
+        circle.setTranslateY(0);
+        ellipse.setOpacity(1);
+        ellipse.setScaleX(1);
+        ellipse.setScaleY(1);
+        ellipse.setRotate(0);
+        ellipse.setTranslateX(0);
+        ellipse.setTranslateY(0);
     }
 
 }
