@@ -45,12 +45,16 @@ public class App extends Application {
         ellipse.setStroke(Color.BLACK);
         
         FadeTransition fTrans = new FadeTransition();
+        fTrans.setCycleCount(Animation.INDEFINITE);
         
         ScaleTransition sTrans = new ScaleTransition();
+        sTrans.setCycleCount(Animation.INDEFINITE);
         
         RotateTransition rTrans = new RotateTransition();
+        sTrans.setCycleCount(Animation.INDEFINITE);
         
         TranslateTransition tTrans = new TranslateTransition();
+        tTrans.setCycleCount(Animation.INDEFINITE);
         
         root.getChildren().addAll(rectangle, circle, ellipse);
         var scene = new Scene(root, 640, 480);
