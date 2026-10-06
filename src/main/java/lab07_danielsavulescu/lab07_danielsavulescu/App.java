@@ -46,15 +46,19 @@ public class App extends Application {
         
         FadeTransition fTrans = new FadeTransition();
         fTrans.setCycleCount(Animation.INDEFINITE);
+        fTrans.setAutoReverse(true);
         
         ScaleTransition sTrans = new ScaleTransition();
         sTrans.setCycleCount(Animation.INDEFINITE);
+        sTrans.setAutoReverse(true);
         
         RotateTransition rTrans = new RotateTransition();
-        sTrans.setCycleCount(Animation.INDEFINITE);
+        rTrans.setCycleCount(Animation.INDEFINITE);
+        rTrans.setAutoReverse(true);
         
         TranslateTransition tTrans = new TranslateTransition();
         tTrans.setCycleCount(Animation.INDEFINITE);
+        tTrans.setAutoReverse(true);
         
         root.getChildren().addAll(rectangle, circle, ellipse);
         var scene = new Scene(root, 640, 480);
