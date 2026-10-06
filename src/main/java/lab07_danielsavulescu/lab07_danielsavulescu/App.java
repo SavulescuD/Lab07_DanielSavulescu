@@ -44,21 +44,29 @@ public class App extends Application {
         ellipse.setFill(null);
         ellipse.setStroke(Color.BLACK);
         
-        FadeTransition fTrans = new FadeTransition();
+        FadeTransition fTrans = new FadeTransition(new Duration(2500));
         fTrans.setCycleCount(Animation.INDEFINITE);
+        fTrans.setFromValue(1.0);
+        fTrans.setToValue(0.25);
         fTrans.setAutoReverse(true);
         
-        ScaleTransition sTrans = new ScaleTransition();
+        ScaleTransition sTrans = new ScaleTransition(new Duration(2500));
         sTrans.setCycleCount(Animation.INDEFINITE);
+        sTrans.setToX(2.0);
+        sTrans.setToY(2.0);
         sTrans.setAutoReverse(true);
         
-        RotateTransition rTrans = new RotateTransition();
+        RotateTransition rTrans = new RotateTransition(new Duration(2500));
         rTrans.setCycleCount(Animation.INDEFINITE);
+        rTrans.setFromAngle(0.0);
+        rTrans.setToAngle(360.0);
         rTrans.setAutoReverse(true);
         
-        TranslateTransition tTrans = new TranslateTransition();
+        TranslateTransition tTrans = new TranslateTransition(new Duration(2500));
         tTrans.setCycleCount(Animation.INDEFINITE);
         tTrans.setAutoReverse(true);
+        tTrans.setToX(SCENE_WIDTH / 2);
+        tTrans.setToY(SCENE_HEIGHT / 2 - 50);
         
         root.getChildren().addAll(rectangle, circle, ellipse);
         var scene = new Scene(root, 640, 480);
